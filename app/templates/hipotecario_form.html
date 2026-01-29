@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="/static/styles.css">
+
+<div class="container">
+  <div class="card">
+    <h2>Solicitud de Crédito Hipotecario</h2>
+    <p>Completa la información para iniciar el estudio de tu crédito.</p>
+
+    <form method="post" action="/hipotecario/registrar">
+      <input name="nombre" placeholder="Nombre completo" required>
+      <input name="ingreso" type="number" placeholder="Ingreso mensual" required>
+      <input name="valor_vivienda" type="number" placeholder="Valor de la vivienda" required>
+
+      <button>Enviar solicitud</button>
+    </form>
+  </div>
+</div>

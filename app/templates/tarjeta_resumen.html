@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/static/styles.css">
+
+<div class="container">
+  <div class="card">
+    <span class="badge">Tarjeta de Crédito</span>
+
+    <h2>Resumen de Pago</h2>
+    <p>Consulta el estado actual de tu tarjeta y realiza tu pago.</p>
+
+    <div style="margin: 24px 0;">
+      <p><strong>Saldo total:</strong> ${{ saldo }}</p>
+      <p><strong>Pago mínimo:</strong> ${{ minimo }}</p>
+    </div>
+
+    <form method="post" action="/tarjeta/pagar">
+      <button>Pagar ahora</button>
+    </form>
+
+    <div style="margin-top: 20px;">
+      <a href="/home">← Volver al Home</a>
+    </div>
+  </div>
+</div>
+

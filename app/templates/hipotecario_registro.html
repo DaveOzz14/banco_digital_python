@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="/static/styles.css">
+
+<div class="container">
+  <div class="card">
+    <span class="badge">Solicitud {{ estado }}</span>
+
+    <h2>Solicitud registrada exitosamente</h2>
+
+    <p>Hemos recibido tu solicitud con la siguiente información:</p>
+
+    <ul>
+      <li><strong>Cliente:</strong> {{ nombre }}</li>
+      <li><strong>Ingreso mensual:</strong> ${{ ingreso }}</li>
+      <li><strong>Valor vivienda:</strong> ${{ valor_vivienda }}</li>
+    </ul>
+
+    <p>Un asesor financiero se pondrá en contacto contigo.</p>
+
+    <a href="/home">
+      <button>Volver al Home</button>
+    </a>
+  </div>
+</div>
