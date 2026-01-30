@@ -2,3 +2,10 @@ fastapi
 uvicorn
 jinja2
 python-multipart
+
+# OpenTelemetry dependencies
+opentelemetry-api==1.28.2
+opentelemetry-sdk==1.28.2
+opentelemetry-exporter-otlp-proto-http==1.28.2
+opentelemetry-instrumentation-fastapi==0.49b2
+opentelemetry-instrumentation-logging==0.49b2
