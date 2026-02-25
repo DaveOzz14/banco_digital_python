@@ -1,0 +1,113 @@
+from fastapi import FastAPI
+from opentelemetry import trace  
+from opentelemetry.sdk.resources import Resource  
+from opentelemetry.sdk.trace import TracerProvider  
+from opentelemetry.sdk.trace.export import BatchSpanProcessor  
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter  
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor  
+
+resource = Resource(attributes={
+    "service.name": "calculadora-service",  
+    "service.version": "1.0.0",  
+    "deployment.environment": "dev"  
+})
+trace.set_tracer_provider(TracerProvider(resource=resource))  
+tracer = trace.get_tracer(__name__)  
+OTLP_ENDPOINT = "https://lqb55772.live.dynatrace.com/api/v2/otlp/v1/traces" 
+
+OTLP_HEADERS = {
+    "Authorization": "Api-Token dt0c01.NVWZ3DBAR52MJHSIJQ53SIWL.XFU6DL4L2CO5OIAZVUPO47UQB2WLMANA3I545MSOGF2WEEH6KU2D7GBUUR667XED"
+}
+otlp_exporter = OTLPSpanExporter(
+    endpoint=OTLP_ENDPOINT,
+    headers=OTLP_HEADERS
+)
+span_processor = BatchSpanProcessor(otlp_exporter)
+trace.get_tracer_provider().add_span_processor(span_processor)
+
+
+app = FastAPI(
+    title="Aplicacion en Python",
+    description="Ejercicio basico en Python"
+)
+
+FastAPIInstrumentor.instrument_app(app)
+
+
+@app.get("/")
+def inicio():
+    return {"mensaje": "Hola soy el endpoint raiz"}
+
+@app.get("/sumar")
+def sumar(a: int, b: int):
+
+    with tracer.start_as_current_span("calculo_suma") as span:
+    
+        resultado = a + b
+
+        span.set_attribute("app.operacion", "suma")
+        span.set_attribute("app.a", a)
+        span.set_attribute("app.b", b)
+        span.set_attribute("app.resultado", resultado)
+
+        return {
+            "operacion": "Suma",
+            "a": a,
+            "b": b,
+            "resultado": resultado
+        }
+
+@app.get("/operacion")
+def operacion(a: int, b: int, tipo: str):
+
+    with tracer.start_as_current_span("calculo_operacion") as span:
+        
+
+        span.set_attribute("app.a", a)
+        span.set_attribute("app.b", b)
+        span.set_attribute("app.tipo", tipo)
+
+        
+
+        if tipo == "suma":
+            resultado = a + b
+            span.set_attribute("app.resultado", resultado)
+        elif tipo == "resta":
+            resultado = a - b
+            span.set_attribute("app.resultado", resultado)
+        elif tipo == "multiplicacion":
+            resultado = a * b
+            span.set_attribute("app.resultado", resultado)
+        elif tipo == "division":
+            resultado = a / b
+            span.set_attribute("app.resultado", resultado)
+        else:
+            resultado = "Ninguna Operacion"
+            span.set_attribute("app.Error", resultado)
+
+        return {
+            "operacion": tipo,
+            "resultado": resultado
+        }
+
+@app.get("/tabla")
+def tabla(numero: int):
+
+    with tracer.start_as_current_span("calculo_tabla") as span:
+        # Crea un span manual para el cálculo de la tabla.
+
+        span.set_attribute("app.numero", numero)
+        # Guarda el número recibido como atributo del span.
+
+        resultados = []
+
+        for i in range(1, 11):
+            resultados.append({
+                "resultado": numero * i
+            })
+
+        return {
+            "numero": numero,
+            "tabla": resultados
+        }
+
